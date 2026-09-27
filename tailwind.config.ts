@@ -1,0 +1,82 @@
+import type { Config } from 'tailwindcss'
+
+export default {
+  darkMode: 'class',
+  content: [
+    './app/**/*.{vue,js,ts,jsx,tsx}',
+    './components/**/*.{vue,js,ts,jsx,tsx}',
+    './layouts/**/*.{vue,js,ts,jsx,tsx}',
+    './pages/**/*.{vue,js,ts,jsx,tsx}',
+    './plugins/**/*.{js,ts}',
+    './app.vue'
+  ],
+  theme: {
+    extend: {
+      colors: {
+        ios: {
+          blue: '#007AFF',
+          cyan: '#32ADE6',
+          purple: '#AF52DE',
+          indigo: '#5856D6',
+          pink: '#FF2D55',
+          green: '#34C759',
+          amber: '#FF9500',
+          dark: {
+            bg: '#05070f',
+            card: 'rgba(20, 25, 45, 0.45)',
+            border: 'rgba(255, 255, 255, 0.12)',
+            surface: 'rgba(255, 255, 255, 0.05)'
+          },
+          light: {
+            bg: '#f8fafc',
+            card: 'rgba(255, 255, 255, 0.65)',
+            border: 'rgba(255, 255, 255, 0.6)',
+            surface: 'rgba(255, 255, 255, 0.3)'
+          }
+        }
+      },
+      fontFamily: {
+        sans: ['Plus Jakarta Sans', '-apple-system', 'BlinkMacSystemFont', 'SF Pro Text', 'SF Pro Display', 'system-ui', 'sans-serif'],
+        mono: ['JetBrains Mono', 'SF Mono', 'ui-monospace', 'monospace']
+      },
+      backdropBlur: {
+        '2xs': '2px',
+        'xs': '4px',
+        '3xl': '32px',
+        '4xl': '48px',
+        '5xl': '64px'
+      },
+      boxShadow: {
+        'glass': '0 8px 32px 0 rgba(0, 0, 0, 0.37)',
+        'glass-inset': 'inset 0 1px 1px 0 rgba(255, 255, 255, 0.25)',
+        'glass-glow': '0 0 25px rgba(0, 122, 255, 0.3)',
+        'glass-card': '0 20px 40px -15px rgba(0, 0, 0, 0.5), inset 0 1px 1px 0 rgba(255, 255, 255, 0.15)',
+        'ios-floating': '0 12px 30px -4px rgba(0, 0, 0, 0.3), 0 4px 12px -2px rgba(0, 0, 0, 0.2)'
+      },
+      animation: {
+        'float-slow': 'float 8s ease-in-out infinite',
+        'pulse-glow': 'pulseGlow 4s ease-in-out infinite',
+        'shimmer': 'shimmer 2.5s infinite',
+        'gradient-mesh': 'gradientMesh 12s ease infinite'
+      },
+      keyframes: {
+        float: {
+          '0%, 100%': { transform: 'translateY(0px)' },
+          '50%': { transform: 'translateY(-12px)' }
+        },
+        pulseGlow: {
+          '0%, 100%': { opacity: '0.4', transform: 'scale(1)' },
+          '50%': { opacity: '0.7', transform: 'scale(1.05)' }
+        },
+        shimmer: {
+          '100%': { transform: 'translateX(100%)' }
+        },
+        gradientMesh: {
+          '0%, 100%': { backgroundPosition: '0% 50%' },
+          '50%': { backgroundPosition: '100% 50%' }
+        }
+      }
+    }
+  },
+  plugins: []
+} satisfies Config

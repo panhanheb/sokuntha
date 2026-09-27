@@ -1,0 +1,11 @@
+{
+  "version": 1,
+  "skills": {
+    "nuxt4-patterns": {
+      "source": "affaan-m/ecc",
+      "sourceType": "github",
+      "skillPath": "skills/nuxt4-patterns/SKILL.md",
+      "computedHash": "fb63d029610d16afd331b6049a284432a73ca88f4e9c12e4867eb206ca73521d"
+    }
+  }
+}
