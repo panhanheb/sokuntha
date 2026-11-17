@@ -1,23 +1,21 @@
 <script setup lang="ts">
-// Nuxt 4 + Vue 3 Developer Portfolio for Sorn Sokuntha
-// Complete iOS 26 Liquid Frosted Glass System
+const { syncTheme } = usePortfolioState()
+onMounted(syncTheme)
 </script>
 
 <template>
-  <div class="relative min-h-screen selection:bg-cyan-400/30 selection:text-cyan-200 bg-[#030612] text-white">
-    <!-- Whole-screen Atmospheric Ambient Glow & Perspective Grid -->
-    <BackgroundOrbs />
+  <div class="min-h-screen bg-bg text-fg">
+    <a
+      href="#main"
+      class="sr-only focus:not-sr-only focus:fixed focus:left-4 focus:top-4 focus:z-[100] focus:rounded-full focus:bg-fg focus:px-4 focus:py-2 focus:text-sm focus:text-bg"
+    >
+      Skip to content
+    </a>
 
-    <!-- iOS 26 Dynamic Island Floating Top Notification Pill -->
-    <DynamicIslandNotification />
-
-    <!-- Header Navigation -->
     <Navbar />
 
-    <!-- Main Content Flow -->
-    <main class="relative z-10 space-y-12">
+    <main id="main">
       <Hero />
-      <TechMarquee />
       <About />
       <Skills />
       <Projects />
@@ -26,10 +24,8 @@
       <Contact />
     </main>
 
-    <!-- Frosted Glass Footer -->
     <Footer />
 
-    <!-- Interactive Glass Modals -->
     <CvModal />
     <ProjectModal />
   </div>

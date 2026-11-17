@@ -1,0 +1,30 @@
+# Dependencies
+node_modules
+
+# Nuxt build output & caches
+.nuxt
+.output
+.data
+.nitro
+.cache
+dist
+
+# npm
+.npm
+npm-debug.log*
+
+# Logs
+logs
+*.log
+
+# Environment files
+.env
+.env.*
+!.env.example
+
+# Editor / OS
+.idea
+.vscode/*
+!.vscode/extensions.json
+.DS_Store
+Thumbs.db

@@ -1,113 +1,44 @@
-import confetti from 'canvas-confetti'
-
-export interface ProjectItem {
-  id: string
-  title: string
-  subtitle: string
-  category: 'Mobile' | 'Web' | 'System'
-  description: string
-  technologies: string[]
-  features: string[]
-  gradient: string
-  accentColor: string
-  iconName: string
-  mockupType: 'phone' | 'browser' | 'system'
-}
+import type { Project } from '~/data/portfolio'
 
 export const usePortfolioState = () => {
-  const activeSection = useState<string>('activeSection', () => 'home')
-  const isDarkMode = useState<boolean>('isDarkMode', () => true)
   const isCvModalOpen = useState<boolean>('isCvModalOpen', () => false)
-  const activeProject = useState<ProjectItem | null>('activeProject', () => null)
-  
-  const islandNotification = useState<{
-    show: boolean
-    title: string
-    subtitle?: string
-    type?: 'success' | 'info' | 'haptic'
-    icon?: string
-  }>('islandNotification', () => ({
-    show: false,
-    title: '',
-    subtitle: '',
-    type: 'info'
-  }))
+  const activeProject = useState<Project | null>('activeProject', () => null)
+  const isDark = useState<boolean>('isDark', () => true)
 
-  let timeoutId: NodeJS.Timeout | null = null
-
-  const triggerDynamicIsland = (title: string, subtitle = '', type: 'success' | 'info' | 'haptic' = 'info') => {
-    if (timeoutId) clearTimeout(timeoutId)
-    islandNotification.value = { show: true, title, subtitle, type }
-    if (process.client) {
-      timeoutId = setTimeout(() => {
-        islandNotification.value.show = false
-      }, 4200)
-    }
+  const syncTheme = () => {
+    if (import.meta.client) isDark.value = document.documentElement.classList.contains('dark')
   }
 
-  const toggleDarkMode = () => {
-    isDarkMode.value = !isDarkMode.value
-    if (process.client) {
-      if (isDarkMode.value) {
-        document.documentElement.classList.add('dark')
-        document.documentElement.classList.remove('light')
-      } else {
-        document.documentElement.classList.remove('dark')
-        document.documentElement.classList.add('light')
-      }
-    }
-    triggerDynamicIsland(
-      isDarkMode.value ? 'Dark Mode' : 'Light Mode',
-      'System display appearance adjusted',
-      'haptic'
-    )
-  }
-
-  const fireConfetti = () => {
-    if (!process.client) return
+  const toggleTheme = () => {
+    isDark.value = !isDark.value
+    if (!import.meta.client) return
+    document.documentElement.classList.toggle('dark', isDark.value)
     try {
-      confetti({
-        particleCount: 80,
-        spread: 70,
-        origin: { y: 0.7 },
-        colors: ['#0071e3', '#4facfe', '#af52de', '#34c759', '#ffffff']
-      })
+      localStorage.setItem('theme', isDark.value ? 'dark' : 'light')
     } catch {
-      // ignore
+      // storage unavailable — theme still applies for this visit
     }
   }
 
-  const openCv = () => {
-    isCvModalOpen.value = true
-    fireConfetti()
-    triggerDynamicIsland('Curriculum Vitae', 'CV preview ready & downloadable', 'success')
-  }
-
-  const closeCv = () => {
-    isCvModalOpen.value = false
-  }
-
-  const openProject = (project: ProjectItem) => {
-    activeProject.value = project
-    triggerDynamicIsland(project.title, 'Project architecture & specs', 'info')
-  }
-
-  const closeProject = () => {
-    activeProject.value = null
+  const scrollTo = (id: string) => {
+    if (!import.meta.client) return
+    const el = document.getElementById(id)
+    if (!el) return
+    const reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches
+    const top = el.getBoundingClientRect().top + window.scrollY - 72
+    window.scrollTo({ top, behavior: reduce ? 'auto' : 'smooth' })
   }
 
   return {
-    activeSection,
-    isDarkMode,
-    toggleDarkMode,
     isCvModalOpen,
-    openCv,
-    closeCv,
+    openCv: () => (isCvModalOpen.value = true),
+    closeCv: () => (isCvModalOpen.value = false),
     activeProject,
-    openProject,
-    closeProject,
-    islandNotification,
-    triggerDynamicIsland,
-    fireConfetti
+    openProject: (p: Project) => (activeProject.value = p),
+    closeProject: () => (activeProject.value = null),
+    isDark,
+    syncTheme,
+    toggleTheme,
+    scrollTo
   }
 }

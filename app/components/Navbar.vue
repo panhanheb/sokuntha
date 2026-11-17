@@ -1,193 +1,126 @@
 <script setup lang="ts">
-import { ref, onMounted, onUnmounted } from 'vue'
-import {
-  Sun,
-  Moon,
-  Menu,
-  X,
-  ArrowRight,
-  Download
-} from 'lucide-vue-next'
+import { Menu, X, Sun, Moon, FileText } from 'lucide-vue-next'
+import { navLinks } from '~/data/portfolio'
 
-const { activeSection, isDarkMode, toggleDarkMode, openCv } = usePortfolioState()
+const { isDark, toggleTheme, openCv, scrollTo } = usePortfolioState()
 
-const isMobileMenuOpen = ref(false)
-const isScrolled = ref(false)
+const active = ref('home')
+const scrolled = ref(false)
+const menuOpen = ref(false)
 
-const navItems = [
-  { id: 'about', label: 'ABOUT' },
-  { id: 'projects', label: 'PROJECTS' },
-  { id: 'skills', label: 'SKILLS' },
-  { id: 'education', label: 'EDUCATION' },
-  { id: 'contact', label: 'CONTACT' }
-]
-
-const handleScroll = () => {
-  if (!process.client) return
-  isScrolled.value = window.scrollY > 20
-
-  const sections = ['home', ...navItems.map(item => item.id)].map(id => document.getElementById(id))
-  const scrollPosition = window.scrollY + 180
-
-  for (let i = sections.length - 1; i >= 0; i--) {
-    const el = sections[i]
-    if (el && el.offsetTop <= scrollPosition) {
-      activeSection.value = sections[i]?.id || 'home'
-      break
-    }
-  }
+const go = (id: string) => {
+  menuOpen.value = false
+  scrollTo(id)
 }
 
-const scrollToSection = (id: string) => {
-  isMobileMenuOpen.value = false
-  if (!process.client) return
-  const el = document.getElementById(id)
-  if (el) {
-    const offset = 80
-    const bodyRect = document.body.getBoundingClientRect().top
-    const elementRect = el.getBoundingClientRect().top
-    const elementPosition = elementRect - bodyRect
-    const offsetPosition = elementPosition - offset
-
-    window.scrollTo({
-      top: offsetPosition,
-      behavior: 'smooth'
-    })
-  }
-}
+let observer: IntersectionObserver | null = null
+const onScroll = () => (scrolled.value = window.scrollY > 8)
 
 onMounted(() => {
-  window.addEventListener('scroll', handleScroll, { passive: true })
-  handleScroll()
+  onScroll()
+  window.addEventListener('scroll', onScroll, { passive: true })
+
+  observer = new IntersectionObserver(
+    (entries) => {
+      for (const e of entries) if (e.isIntersecting) active.value = e.target.id
+    },
+    { rootMargin: '-45% 0px -50% 0px' }
+  )
+  for (const { id } of navLinks) {
+    const el = document.getElementById(id)
+    if (el) observer.observe(el)
+  }
 })
 
-onUnmounted(() => {
-  window.removeEventListener('scroll', handleScroll)
+onBeforeUnmount(() => {
+  window.removeEventListener('scroll', onScroll)
+  observer?.disconnect()
 })
 </script>
 
 <template>
   <header
-    class="fixed top-0 left-0 right-0 z-40 transition-all duration-300"
-    :class="[isScrolled ? 'bg-[#030612]/85 backdrop-blur-2xl border-b border-white/10 py-3 shadow-2xl' : 'bg-transparent py-5']"
+    class="fixed inset-x-0 top-0 z-50 border-b transition-colors duration-300"
+    :class="scrolled || menuOpen ? 'border-line bg-bg/80 backdrop-blur-xl' : 'border-transparent bg-transparent'"
   >
-    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex items-center justify-between">
-      
-      <!-- Brand Logo (matching screenshot style) -->
-      <a
-        href="#home"
-        @click.prevent="scrollToSection('home')"
-        class="group flex items-center gap-3 focus:outline-none"
-      >
-        <div class="w-9 h-9 rounded-xl overflow-hidden border border-white/40 shadow-[0_0_15px_rgba(0,242,254,0.4)] group-hover:scale-105 transition-transform flex-shrink-0">
-          <img src="/images/sokuntha-profile.jpg" alt="Sorn Sokuntha" class="w-full h-full object-cover object-[50%_20%]" />
-        </div>
-        <div class="flex items-baseline gap-1.5">
-          <span class="text-base font-black tracking-tight text-white">SORN</span>
-          <span class="text-base font-black tracking-tight neon-gradient-text">Sokuntha</span>
-        </div>
+    <nav class="container-page flex h-16 items-center justify-between" aria-label="Primary">
+      <a href="#home" class="text-sm font-semibold tracking-[0.14em] text-fg" @click.prevent="go('home')">
+        SORN SOKUNTHA
       </a>
 
-      <!-- Center Pill Navigation -->
-      <nav class="hidden md:flex items-center px-4 py-1.5 rounded-full bg-white/[0.04] border border-white/10 backdrop-blur-2xl shadow-inner space-x-1">
-        <button
-          v-for="item in navItems"
-          :key="item.id"
-          @click="scrollToSection(item.id)"
-          class="px-3.5 py-1 text-[11px] font-bold tracking-wider rounded-full transition-all cursor-pointer select-none"
-          :class="[
-            activeSection === item.id
-              ? 'text-white bg-white/15 shadow-sm'
-              : 'text-neutral-400 hover:text-white'
-          ]"
-        >
-          {{ item.label }}
-        </button>
-      </nav>
-
-      <!-- Right Action Controls -->
-      <div class="hidden lg:flex items-center gap-3">
-        <!-- Status Sync Pill -->
-        <div class="flex items-center gap-2 px-3 py-1.5 rounded-full bg-emerald-500/10 border border-emerald-400/30 text-emerald-300 text-[11px] font-mono">
-          <span class="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse"></span>
-          <span>AVAILABLE FOR HIRE</span>
-        </div>
-
-        <!-- Sun/Moon Toggle Button -->
-        <button
-          @click="toggleDarkMode"
-          class="p-2 rounded-xl bg-white/[0.05] hover:bg-white/[0.1] border border-white/10 text-neutral-300 hover:text-white transition-all cursor-pointer"
-          :title="isDarkMode ? 'Switch to Light Mode' : 'Switch to Dark Mode'"
-          :aria-label="isDarkMode ? 'Switch to Light Mode' : 'Switch to Dark Mode'"
-        >
-          <Sun v-if="isDarkMode" class="w-4 h-4 text-amber-300" />
-          <Moon v-else class="w-4 h-4 text-indigo-400" />
-        </button>
-
-        <!-- HIRE ME -> Button -->
-        <button
-          @click="scrollToSection('contact')"
-          class="flex items-center gap-1.5 px-4 py-1.5 rounded-full bg-white/[0.08] hover:bg-white/[0.16] border border-white/20 text-xs font-bold text-white tracking-wider uppercase transition-all shadow-md cursor-pointer hover:border-cyan-400/50"
-        >
-          <span>HIRE ME</span>
-          <ArrowRight class="w-3.5 h-3.5 text-cyan-300" />
-        </button>
-      </div>
-
-      <!-- Mobile Hamburger Controls -->
-      <div class="flex items-center gap-2 md:hidden">
-        <button
-          @click="toggleDarkMode"
-          class="p-2 rounded-xl bg-white/[0.05] border border-white/10 text-neutral-300"
-          :aria-label="isDarkMode ? 'Switch to Light' : 'Switch to Dark'"
-        >
-          <Sun v-if="isDarkMode" class="w-4 h-4 text-amber-300" />
-          <Moon v-else class="w-4 h-4 text-indigo-400" />
-        </button>
-
-        <button
-          @click="isMobileMenuOpen = !isMobileMenuOpen"
-          class="p-2 rounded-xl bg-white/[0.05] border border-white/10 text-neutral-300"
-          :aria-label="isMobileMenuOpen ? 'Close Menu' : 'Open Menu'"
-        >
-          <X v-if="isMobileMenuOpen" class="w-5 h-5 text-white" />
-          <Menu v-else class="w-5 h-5 text-white" />
-        </button>
-      </div>
-
-    </div>
-
-    <!-- Mobile Drawer -->
-    <div
-      v-if="isMobileMenuOpen"
-      class="md:hidden mt-3 max-w-sm mx-auto p-4 rounded-3xl bg-[#080d1e]/95 border border-white/15 backdrop-blur-2xl shadow-2xl"
-    >
-      <div class="flex flex-col space-y-1.5">
-        <button
-          v-for="item in navItems"
-          :key="item.id"
-          @click="scrollToSection(item.id)"
-          class="flex items-center justify-between px-4 py-2.5 rounded-xl text-xs font-bold tracking-wider transition-all"
-          :class="[
-            activeSection === item.id
-              ? 'bg-blue-600/30 text-cyan-300 border border-blue-500/40'
-              : 'text-neutral-300 hover:bg-white/10'
-          ]"
-        >
-          <span>{{ item.label }}</span>
-          <span v-if="activeSection === item.id" class="w-2 h-2 rounded-full bg-cyan-400"></span>
-        </button>
-
-        <div class="pt-3 border-t border-white/10 flex gap-2">
-          <button
-            @click="openCv(); isMobileMenuOpen = false"
-            class="flex-1 pro-btn-primary flex items-center justify-center gap-2 py-2.5 rounded-xl text-xs font-bold text-white shadow-lg"
+      <ul class="hidden items-center gap-1 md:flex">
+        <li v-for="link in navLinks" :key="link.id">
+          <a
+            :href="`#${link.id}`"
+            class="relative rounded-full px-3 py-2 text-sm transition-colors"
+            :class="active === link.id ? 'text-fg' : 'text-muted hover:text-fg'"
+            :aria-current="active === link.id ? 'true' : undefined"
+            @click.prevent="go(link.id)"
           >
-            <Download class="w-4 h-4" />
-            <span>DOWNLOAD CV</span>
-          </button>
-        </div>
+            {{ link.label }}
+            <span
+              class="absolute inset-x-3 -bottom-0.5 h-px bg-accent transition-opacity duration-300"
+              :class="active === link.id ? 'opacity-100' : 'opacity-0'"
+            />
+          </a>
+        </li>
+      </ul>
+
+      <div class="flex items-center gap-1">
+        <button
+          type="button"
+          class="grid h-9 w-9 place-items-center rounded-full text-muted transition-colors hover:bg-subtle hover:text-fg"
+          :aria-label="isDark ? 'Switch to light mode' : 'Switch to dark mode'"
+          @click="toggleTheme"
+        >
+          <Sun v-if="isDark" class="h-4 w-4" />
+          <Moon v-else class="h-4 w-4" />
+        </button>
+        <button type="button" class="btn-primary ml-1 hidden px-4 py-2 sm:inline-flex" @click="openCv">
+          <FileText class="h-4 w-4" />
+          Resume
+        </button>
+        <button
+          type="button"
+          class="grid h-9 w-9 place-items-center rounded-full text-fg hover:bg-subtle md:hidden"
+          :aria-expanded="menuOpen"
+          aria-controls="mobile-menu"
+          :aria-label="menuOpen ? 'Close menu' : 'Open menu'"
+          @click="menuOpen = !menuOpen"
+        >
+          <X v-if="menuOpen" class="h-5 w-5" />
+          <Menu v-else class="h-5 w-5" />
+        </button>
       </div>
-    </div>
+    </nav>
+
+    <Transition
+      enter-active-class="transition duration-200 ease-out"
+      enter-from-class="opacity-0 -translate-y-2"
+      leave-active-class="transition duration-150 ease-in"
+      leave-to-class="opacity-0 -translate-y-2"
+    >
+      <div v-if="menuOpen" id="mobile-menu" class="border-t border-line md:hidden">
+        <ul class="container-page flex flex-col py-3">
+          <li v-for="link in navLinks" :key="link.id">
+            <a
+              :href="`#${link.id}`"
+              class="flex items-center justify-between rounded-xl px-3 py-3 text-base"
+              :class="active === link.id ? 'bg-subtle text-fg' : 'text-muted'"
+              @click.prevent="go(link.id)"
+            >
+              {{ link.label }}
+              <span v-if="active === link.id" class="h-1.5 w-1.5 rounded-full bg-accent" />
+            </a>
+          </li>
+          <li class="mt-2 px-3 pb-2">
+            <button type="button" class="btn-primary w-full" @click="menuOpen = false; openCv()">
+              <FileText class="h-4 w-4" />
+              View Resume
+            </button>
+          </li>
+        </ul>
+      </div>
+    </Transition>
   </header>
 </template>
