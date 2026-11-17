@@ -1,14 +1,8 @@
 <script setup lang="ts">
-import { ArrowRight, Download, MapPin, GraduationCap, Smartphone, Globe, Code } from 'lucide-vue-next'
-import { profile, projects } from '~/data/portfolio'
+import { ArrowRight, Download, MapPin, GraduationCap } from 'lucide-vue-next'
+import { profile } from '~/data/portfolio'
 
 const { openCv, scrollTo } = usePortfolioState()
-
-const appRows = [
-  { icon: Smartphone, label: 'Mobile', value: 'Android · Cross-platform' },
-  { icon: Globe, label: 'Web', value: 'React · Laravel' },
-  { icon: Code, label: 'Languages', value: 'Java · C# · C++' }
-]
 </script>
 
 <template>
@@ -66,69 +60,37 @@ const appRows = [
         </dl>
       </div>
 
-      <!-- Phone mockup -->
-      <div class="relative mx-auto w-full max-w-[300px]" aria-hidden="true">
-        <div class="absolute -inset-6 rounded-[3rem] bg-gradient-to-b from-accent/15 to-transparent blur-2xl" />
-        <div class="relative rounded-[2.75rem] border border-line bg-surface p-2.5 shadow-2xl shadow-black/10 dark:shadow-black/50">
-          <div class="relative overflow-hidden rounded-[2.25rem] border border-line bg-bg">
-            <!-- status bar -->
-            <div class="flex items-center justify-between px-6 pb-2 pt-3 text-[10px] font-semibold text-fg">
-              <span>9:41</span>
-              <span class="h-5 w-20 rounded-full bg-fg" />
-              <span class="flex gap-0.5">
-                <span class="h-2 w-0.5 rounded bg-fg" /><span class="h-2 w-0.5 rounded bg-fg" /><span class="h-2 w-0.5 rounded bg-fg/40" />
-              </span>
-            </div>
-
-            <div class="px-5 pb-6 pt-4">
-              <div class="flex items-center gap-3">
-                <img
-                  :src="profile.photo"
-                  alt=""
-                  width="56"
-                  height="56"
-                  class="h-14 w-14 rounded-2xl object-cover"
-                />
-                <div class="min-w-0">
-                  <p class="truncate text-sm font-semibold text-fg">{{ profile.name }}</p>
-                  <p class="text-xs text-muted">Mobile App Developer</p>
-                </div>
-              </div>
-
-              <div class="mt-5 grid grid-cols-2 gap-2">
-                <div class="rounded-2xl bg-subtle p-3">
-                  <p class="text-lg font-semibold text-fg">{{ projects.length }}</p>
-                  <p class="text-[11px] text-muted">Projects</p>
-                </div>
-                <div class="rounded-2xl bg-accent p-3 text-accent-fg">
-                  <p class="text-lg font-semibold">2026</p>
-                  <p class="text-[11px] opacity-80">Graduate</p>
-                </div>
-              </div>
-
-              <p class="mb-2 mt-5 text-[11px] font-medium uppercase tracking-wider text-faint">Stack</p>
-              <ul class="space-y-2">
-                <li
-                  v-for="row in appRows"
-                  :key="row.label"
-                  class="flex items-center gap-3 rounded-2xl border border-line bg-surface p-3"
-                >
-                  <span class="grid h-8 w-8 place-items-center rounded-xl bg-subtle text-accent">
-                    <component :is="row.icon" class="h-4 w-4" />
-                  </span>
-                  <span class="min-w-0">
-                    <span class="block text-xs font-medium text-fg">{{ row.label }}</span>
-                    <span class="block truncate text-[11px] text-muted">{{ row.value }}</span>
-                  </span>
-                </li>
-              </ul>
-
-              <div class="mt-5 rounded-full bg-fg py-2.5 text-center text-xs font-medium text-bg">Get in touch</div>
-              <div class="mx-auto mt-4 h-1 w-24 rounded-full bg-fg/20" />
-            </div>
-          </div>
+      <!-- Profile portrait -->
+      <figure class="relative mx-auto w-full max-w-[360px] lg:max-w-[400px]">
+        <div
+          class="absolute -inset-4 rounded-[2.5rem] bg-gradient-to-br from-accent/25 via-accent/5 to-transparent blur-2xl"
+          aria-hidden="true"
+        />
+        <div
+          class="relative overflow-hidden rounded-[2rem] border border-line bg-subtle shadow-2xl shadow-black/10 dark:shadow-black/50"
+        >
+          <img
+            :src="profile.photo"
+            :alt="`Portrait of ${profile.name}`"
+            width="900"
+            height="900"
+            fetchpriority="high"
+            class="aspect-[4/5] w-full object-cover object-top"
+          />
+          <figcaption
+            class="absolute inset-x-3 bottom-3 flex items-center justify-between gap-3 rounded-2xl border border-white/10 bg-black/55 px-4 py-3 text-white backdrop-blur-md"
+          >
+            <span class="min-w-0">
+              <span class="block truncate text-sm font-semibold">{{ profile.name }}</span>
+              <span class="block text-xs text-white/70">Web Developer</span>
+            </span>
+            <span class="flex shrink-0 items-center gap-1 text-xs text-white/70">
+              <MapPin class="h-3.5 w-3.5" />
+              Phnom Penh
+            </span>
+          </figcaption>
         </div>
-      </div>
+      </figure>
     </div>
   </section>
 </template>
