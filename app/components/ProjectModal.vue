@@ -71,7 +71,7 @@ watch(activeProject, (p) => {
             <div class="mt-8 flex flex-wrap items-center gap-3 border-t border-line pt-6">
               <a
                 :href="`mailto:${profile.email}?subject=${encodeURIComponent(activeProject.title)}`"
-                class="btn-primary"
+                class="btn-primary w-full py-3 sm:w-auto sm:py-2.5"
               >
                 <Mail class="h-4 w-4" />
                 Ask about this project

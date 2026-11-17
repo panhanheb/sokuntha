@@ -157,7 +157,7 @@ const submit = () => {
               <template v-if="prepared">Your email app should open with the message ready to send.</template>
               <template v-else>Opens your email app with the message pre-filled.</template>
             </p>
-            <button type="submit" class="btn-primary">
+            <button type="submit" class="btn-primary w-full py-3 sm:w-auto sm:py-2.5">
               <Send class="h-4 w-4" />
               Send Message
             </button>

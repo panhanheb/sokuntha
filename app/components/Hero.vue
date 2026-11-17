@@ -34,13 +34,17 @@ const { openCv, scrollTo } = usePortfolioState()
           {{ profile.summary }}
         </p>
 
-        <div class="mt-9 flex flex-wrap items-center gap-3">
-          <button type="button" class="btn-primary" @click="scrollTo('projects')">
+        <div class="mt-9 grid grid-cols-2 gap-3 sm:flex sm:flex-wrap sm:items-center">
+          <button type="button" class="btn-primary col-span-2 py-3 sm:py-2.5" @click="scrollTo('projects')">
             View Projects
             <ArrowRight class="h-4 w-4" />
           </button>
-          <button type="button" class="btn-secondary" @click="scrollTo('contact')">Contact Me</button>
-          <button type="button" class="btn-ghost" @click="openCv">
+          <button type="button" class="btn-secondary py-3 sm:py-2.5" @click="scrollTo('contact')">Contact Me</button>
+          <button
+            type="button"
+            class="btn-secondary py-3 sm:border-transparent sm:bg-transparent sm:px-3 sm:py-2.5 sm:text-muted sm:hover:text-fg"
+            @click="openCv"
+          >
             <Download class="h-4 w-4" />
             Download CV
           </button>

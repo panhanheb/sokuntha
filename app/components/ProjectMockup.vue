@@ -9,7 +9,7 @@ defineProps<{ type: Project['mockup'] }>()
     <!-- Phone -->
     <div
       v-if="type === 'phone'"
-      class="w-[44%] translate-y-6 rounded-t-[1.6rem] border border-b-0 border-line bg-surface p-1.5 pb-0 shadow-xl shadow-black/10"
+      class="mt-7 w-[40%] self-start rounded-t-[1.6rem] border border-b-0 border-line bg-surface p-1.5 pb-0 shadow-xl shadow-black/10"
     >
       <div class="rounded-t-[1.25rem] bg-bg p-3 pb-6">
         <div class="mx-auto h-1.5 w-10 rounded-full bg-fg/80" />

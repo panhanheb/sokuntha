@@ -25,12 +25,12 @@ const { openCv, scrollTo } = usePortfolioState()
             contribute to real-world projects, learn from experienced developers, and grow as a professional software
             developer.
           </p>
-          <div class="mt-9 flex flex-wrap justify-center gap-3">
-            <button type="button" class="btn bg-bg text-fg hover:bg-bg/90" @click="scrollTo('contact')">
+          <div class="mx-auto mt-9 flex max-w-xs flex-col gap-3 sm:max-w-none sm:flex-row sm:justify-center">
+            <button type="button" class="btn bg-bg py-3 text-fg hover:bg-bg/90 sm:py-2.5" @click="scrollTo('contact')">
               Contact Me
               <ArrowRight class="h-4 w-4" />
             </button>
-            <button type="button" class="btn border border-bg/20 text-bg hover:border-bg/50" @click="openCv">
+            <button type="button" class="btn border border-bg/20 py-3 text-bg hover:border-bg/50 sm:py-2.5" @click="openCv">
               <Download class="h-4 w-4" />
               Download CV
             </button>
